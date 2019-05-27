@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Єдиний реєстр нотаріусів</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+        body {
+            font-family: 'Open Sans';
+            overflow-y: scroll;
+            overflow-x: hidden;
+        }
+* {
+  box-sizing: border-box;
+}
+
+
+#myInput {
+  background-image: url('/css/searchicon.png');
+  background-position: 10px 10px;
+  background-repeat: no-repeat;
+  width: 100%;
+  font-size: 16px;
+  padding: 12px 20px 12px 40px;
+  border: 1px solid #ddd;
+  margin-bottom: 12px;
+}
+
+#myTable {
+  border-collapse: collapse;
+  width: 100%;
+  border: 1px solid #ddd;
+  font-size: 18px;
+}
+
+#myTable th, #myTable td {
+  text-align: left;
+  padding: 12px;
+}
+
+#myTable tr {
+  border-bottom: 1px solid #ddd;
+}
+
+#myTable tr.header, #myTable tr:hover {
+  background-color: #f1f1f1;
+}
+
+.center {margin:auto;}
+
+a:hover {
+    text-decoration: none;
+}
+.m-auto {
+    margin-top: auto;
+    margin-bottom: auto;        
+}
+
+.container {
+    height: 100%;
+}
+html, body {
+    height: 100%;
+}
+
+
+</style>
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<h2>Єдиний реєстр нотаріусів</h2>
+
+<input type="text" id="myInput" onkeyup="myFunction()" placeholder="Шукати за іменем..." title="Type in a name">
+
+<table id="myTable">
+  <tr class="header">
+    <th style="width:20%;">ПІБ</th>
+    <th style="width:20%;">Адреса</th>
+    <th style="width:10%;">Телефон</th>
+    <th style="width:5%;">Індекс</th>
+    <th style="width:10%;">Статус</th>
+    <th style="width:10%;">Номер свідоцтва</th>
+    <th style="width:10%;">Регіон</th>
+    <th style="width:10%;">Дата додавання</th>
+    <% if (user.isAdmin) { %>
+        <th style="width:5%;">Delete</th>
+    <% } %>
+  </tr>
+  <% for (let notarius of docs){%>
+    <tr>
+        <td><%=notarius.fullname%></td>
+        <td><%=notarius.address%></td>
+        <td><%=notarius.telephone%></td>
+        <td><%=notarius.index%></td>
+        <td><%=notarius.status%></td>
+        <td><%=notarius.registration_code%></td>
+        <td><%=notarius.region%></td>
+        <td><%=notarius.addition_date%></td>
+        <% if (user.isAdmin) { %>
+            <td>
+                <form action="/delNotarius" method="POST">
+                    <input style="display: none;" name="id" id="id" value='<%=  notarius._id %>'></hidden>
+                    <input type="submit" class="btn btn-outline-danger" value="×" class="borderline"/>
+                </form>
+            </td>
+        <% } %>
+    </tr>
+<%}%>
+</table>
+
+<% if (user.isAdmin) { %>
+    <div class="">
+            <div class="row">
+                <div class="m-auto">
+                    <div class="mx-auto center">
+                            <div class="mx-auto">
+                                <a href="/addNotarius" >
+                                    <button type="button" style="margin-top: 20px;" class="btn btn-outline-primary mx-auto" >Додати нотаріуса</button>
+                                </a>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<% } %>
+<div style="position: absolute; right: 30px; bottom: 5px;">
+    <p class="text-muted">
+        Ви - <%=user.username%> | 
+        <a style="text-decoration: none!important;" href="/logout">Вийти</a>
+    </p>
+</div>
+
+
+
+<script src="../javascripts/filter.js"></script>
+
+</body>
+</html>
