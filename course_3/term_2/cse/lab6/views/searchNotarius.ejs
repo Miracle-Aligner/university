@@ -88,7 +88,8 @@ html, body {
     <th style="width:10%;">Регіон</th>
     <th style="width:10%;">Дата додавання</th>
     <% if (user.isAdmin) { %>
-        <th style="width:5%;">Delete</th>
+        <th style="width:5%;">Редагувати</th>
+        <th style="width:5%;">Видалити</th>
     <% } %>
   </tr>
   <% for (let notarius of docs){%>
@@ -103,6 +104,12 @@ html, body {
         <td><%=notarius.addition_date%></td>
         <% if (user.isAdmin) { %>
             <td>
+                <form action="/editNotarius" method="POST">
+                    <input style="display: none;" name="id" id="id" value='<%=  notarius._id %>'></hidden>
+                    <input type="submit" class="btn btn-outline-primary" value="✎" class="borderline"/>
+                </form>
+            </td>
+            <td>
                 <form action="/delNotarius" method="POST">
                     <input style="display: none;" name="id" id="id" value='<%=  notarius._id %>'></hidden>
                     <input type="submit" class="btn btn-outline-danger" value="×" class="borderline"/>
@@ -115,19 +122,18 @@ html, body {
 
 <% if (user.isAdmin) { %>
     <div class="">
-            <div class="row">
-                <div class="m-auto">
-                    <div class="mx-auto center">
-                            <div class="mx-auto">
-                                <a href="/addNotarius" >
-                                    <button type="button" style="margin-top: 20px;" class="btn btn-outline-primary mx-auto" >Додати нотаріуса</button>
-                                </a>
-                            </div>
-                    </div>
+        <div class="row">
+            <div class="m-auto">
+                <div class="mx-auto center">
+                        <div class="mx-auto">
+                            <a href="/addNotarius" >
+                                <button type="button" style="margin-top: 20px;" class="btn btn-outline-primary mx-auto" >Додати запис</button>
+                            </a>
+                        </div>
                 </div>
             </div>
         </div>
-
+    </div>
 <% } %>
 <div style="position: absolute; right: 30px; bottom: 5px;">
     <p class="text-muted">

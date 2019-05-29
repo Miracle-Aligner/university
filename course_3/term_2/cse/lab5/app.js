@@ -41,7 +41,7 @@ app.get('/logout', loggedIn, function(req, res, next) {
 });
 
 app.get("/notarius", loggedIn, function(req, res, next) {
-    let film = storage.getAll()
+    let notarius = storage.getAll()
     .then (data =>{
         data.user = req.user;
         res.render('searchNotarius', data);
@@ -68,6 +68,28 @@ app.post('/delNotarius', (req, res) => {
         res.redirect("/notarius");
     });
 });
+
+app.post('/editNotarius', (req, res) => {
+    let notariusId = req.body.id;
+    res.redirect("/notarius/" + notariusId);
+});
+
+app.post('/updateNotarius', loggedIn, function(req, res, next) {
+    console.log("INDEX: " + req.body.index)
+    storage.editNotarius(req)
+    .then(data => {
+        res.redirect("/notarius");
+    });
+});
+
+app.get("/notarius/:id", loggedIn, function(req, res, next) {
+    let notarius = storage.getById(req.params.id)
+    .then (data =>{
+        data.user = req.user;
+        res.render('editNotarius', data);
+    })
+    .catch(err => console.log(err.toString()));
+})
 
 app.get('/', function(req, res, next) {
     res.render('main', {user: req.user});

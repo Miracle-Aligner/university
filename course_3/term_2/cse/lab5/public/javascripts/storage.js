@@ -10,10 +10,10 @@ let registrySchema = new mongoose.Schema({
     fullname: String,
     address: String,
     telephone: String,
-    index: Number,
+    index: String,
     addition_date: Date,
     status: String,
-    registration_code: Number,
+    registration_code: String,
     region: String
 }, {collection: "registry"});
 registrySchema.plugin(mongoosePaginate);
@@ -54,6 +54,23 @@ function addNotarius(req){
             }
 		});
 	});
+}
+
+function editNotarius(req){
+    return getById(req.body.id)
+    .then(notarius => {
+        
+        notarius.fullname = req.body.fullname;
+        notarius.address = req.body.address;
+        notarius.telephone = req.body.telephone;
+        notarius.index = req.body.index;
+        notarius.status = req.body.status;
+        notarius.registration_code = req.body.registration_code;
+        notarius.region = req.body.region;
+
+        db.collection("registry").update({'_id': notarius._id}, notarius, {upsert: false})
+    })
+    .catch(err => {return Promise.reject(err)});
 }
 
 function delNotarius(id){
@@ -147,6 +164,7 @@ module.exports = {
     getById,
     addNotarius,
     delNotarius,
+    editNotarius,
     getAll,
     getUsers,
     createUser,

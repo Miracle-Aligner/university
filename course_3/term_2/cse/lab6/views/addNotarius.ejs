@@ -19,13 +19,13 @@
     <form class="form-signin" action='/addNotarius' method='POST' autocomplete="off">
       <h1 class="h3 mb-3 font-weight-normal">Додати нотаріуса</h1>
       <label class="sr-only">ПІБ</label>
-      <input name = "fullname" class="form-control" placeholder="ПІБ" required="true" autofocus="">
+      <input name = "fullname" pattern="^([а-яА-Я0-9]+|[а-яА-Я0-9]+\s{1}[а-яА-Я0-9]{1,}|[а-яА-Я0-9]+\s{1}[а-яА-Я0-9]{3,}\s{1}[а-яА-Я0-9]{1,})$" title="Введіть ПІБ." class="form-control" placeholder="ПІБ" required="true" autofocus="">
       <label class="sr-only">Адреса</label>
       <input name = "address" class="form-control" placeholder="Адреса" required="true">
       <label class="sr-only">Телефон</label>
-      <input name = "telephone" class="form-control" placeholder="Телефон" required="true" autofocus="">
+      <input name = "telephone" pattern="[\+]380[\(]\d{2}[\)]\d{3}[\-]\d{2}[\-]\d{2}" title="Подайте телефон у вигляді: +380(xx)xxx-xx-xx." class="form-control" placeholder="Телефон" required="true" autofocus="">
       <label class="sr-only">Індекс</label>
-      <input name = "index" class="form-control" placeholder="Індекс" required="true" autofocus="">
+      <input name = "index" pattern="\d{5}" title="Індекс повинен складатися із п\'яти цифр." class="form-control" placeholder="Індекс" required="true" autofocus="">
       <label class="sr-only">Статус</label>
       <input name = "status" class="form-control" placeholder="Статус" required="true" autofocus="">
       <label class="sr-only">Номер свідоцтва</label>
