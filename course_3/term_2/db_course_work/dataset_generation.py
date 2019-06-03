@@ -1,22 +1,22 @@
 from collections import namedtuple
 
 import os
-import pandas as pd
 import requests;
 import json
 import lxml
 import html5lib
 from bs4 import BeautifulSoup
+import pymongo
 from pymongo import MongoClient
 
 class Dataset():
     def generate(self):
 
-        n_dataset = NASA_dataset()
         w_dataset = Wiki_dataset()
+        n_dataset = NASA_dataset()
 
-        n_dataset.generate()
         w_dataset.generate()
+        n_dataset.generate()
 
 
 class NASA_dataset():
@@ -36,21 +36,25 @@ class NASA_dataset():
 
 
     def fill_db(self, arr):
-        client = MongoClient('mongodb://user1:user1user1@ds159036.mlab.com:59036/space_exploration')
+        client = MongoClient('mongodb://dbuser1:dbuser1dbuser1@localhost:27200/space_exploration')
         confirmed_planets_collection = client.space_exploration.confirmed_planets
         for planet in arr:
-            confirmed_planets_collection.insert_one(
-                {"pl_hostname": planet.pl_hostname,
-                 "pl_letter": planet.pl_letter,
-                 "pl_name": planet.pl_name,
-                 "pl_discmethod": planet.pl_discmethod,
-                 "pl_controvflag": planet.pl_controvflag,
-                 "rowupdate": planet.rowupdate,
-                 "pl_facility": planet.pl_facility,
-                 "pl_masse": planet.pl_masse,
-                 "pl_locale": planet.pl_locale,
-                 "ra": planet.ra,
-                 "dec": planet.dec,})
+            # searching for discovering facility in observatories_collection
+            w_dataset = Wiki_dataset()
+            observatory = w_dataset.get_id_by_name(planet.pl_facility)
+            if observatory is not None:
+                confirmed_planets_collection.insert_one(
+                    {"pl_hostname": planet.pl_hostname,
+                     "pl_letter": planet.pl_letter,
+                     "pl_name": planet.pl_name,
+                     "pl_discmethod": planet.pl_discmethod,
+                     "pl_controvflag": planet.pl_controvflag,
+                     "rowupdate": planet.rowupdate,
+                     "pl_facility_id": observatory["_id"],
+                     "pl_masse": planet.pl_masse,
+                     "pl_locale": planet.pl_locale,
+                     "ra": planet.ra,
+                     "dec": planet.dec,})
 
         print("All planets are successfully inserted!")
 
@@ -74,7 +78,7 @@ class Wiki_dataset():
         self.fill_db(observatories_arr)
 
     def fill_db(self, arr):
-        client = MongoClient('mongodb://user1:user1user1@ds159036.mlab.com:59036/space_exploration')
+        client = MongoClient('mongodb://dbuser1:dbuser1dbuser1@localhost:27200/space_exploration')
         observatories_collection = client.space_exploration.observatories
         for observatory in arr:
             observatories_collection.insert_one({"name": observatory[0], "foundation_year": observatory[1], "location": observatory[2]})
@@ -99,7 +103,7 @@ class Wiki_dataset():
             for row in table.findAll('tr')[1:]:
                 list_of_cells = []
                 for cell in row.findAll('td'):
-                    list_of_cells.append(cell.text)
+                    list_of_cells.append(cell.text.split('\n')[0])
 
                 # extracting wrong formatted cells from output
                 if (len(list_of_cells) == 3):
@@ -107,7 +111,14 @@ class Wiki_dataset():
 
         return list_of_rows
 
+    def get_id_by_name(self, name):
+        client = MongoClient('mongodb://dbuser1:dbuser1dbuser1@localhost:27200/space_exploration')
+        observatories_collection = client.space_exploration.observatories
 
-client = MongoClient('mongodb://user1:user1user1@ds159036.mlab.com:59036/space_exploration')
-observatories_collection = client.space_exploration.observatories
-print(observatories_collection.find_one( {"$text":{"$search": "Lick Observatory"}}))
+        observatories_collection.create_index([('name', pymongo.TEXT)], name='search_index', default_language='english')
+        return observatories_collection.find_one({"$text": {"$search": name}})
+
+# uncomment in case you need to fill db
+
+db = Dataset()
+db.generate()

@@ -169,5 +169,6 @@ module.exports = {
     getUsers,
     createUser,
     getUserById,
-    getUserByLoginAndPasshash
+    getUserByLoginAndPasshash,
+    checkNull
 }
