@@ -15,7 +15,7 @@ class Dataset():
         w_dataset = Wiki_dataset()
         n_dataset = NASA_dataset()
 
-        w_dataset.generate()
+        #w_dataset.generate()
         n_dataset.generate()
 
 
@@ -24,7 +24,7 @@ class NASA_dataset():
     def generate(self):
         nasa_request_url = "https://exoplanetarchive.ipac.caltech.edu/cgi-bin/nstedAPI/nph-nstedAPI?" + \
                            "table=exoplanets" + \
-                           "&select=pl_hostname,pl_letter,pl_name,pl_discmethod,pl_controvflag,rowupdate,pl_facility,pl_masse,pl_locale,ra,dec" + \
+                           "&select=pl_hostname,pl_letter,pl_name,pl_discmethod,pl_controvflag,rowupdate,pl_facility,pl_masse,pl_locale,pl_disc" + \
                            "&order=dec" + \
                            "&format=json"
 
@@ -53,8 +53,7 @@ class NASA_dataset():
                      "pl_facility_id": observatory["_id"],
                      "pl_masse": planet.pl_masse,
                      "pl_locale": planet.pl_locale,
-                     "ra": planet.ra,
-                     "dec": planet.dec,})
+                     "pl_disc": planet.pl_disc})
 
         print("All planets are successfully inserted!")
 
